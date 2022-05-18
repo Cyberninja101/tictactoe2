@@ -1,0 +1,28 @@
+# Create join game and create game
+
+
+
+{% block head %}
+<title></title>
+{% endblock %}
+
+{% block body %}
+<head>
+    <script type = "text/javascript" src="../static/scripts/index.js"></script>
+</head>
+<div class="content">
+    <h1 style="text-align: center">Tic Tac Toe</h1>
+    
+    
+    <h4 style="text-align: center">Join game or Create Game</h4>
+    <button id="create_button" onclick="window.location.href='/create'">Create game</button>
+    <div>Join Game with ID</div>
+    <form>
+        <input type="text" name="game_id" id="game_id">
+        <button id="join_button" value="Enter Game ID" onclick="join()">Submit</button>
+    </form>
+    
+</div>
+{% endblock %}
+
+

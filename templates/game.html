@@ -1,0 +1,59 @@
+{% extends 'base.html' %}
+
+<html>
+    
+<head>
+    <link href="https://fonts.googleapis.com/css?family=Alfa+Slab+One|Butcherman&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" type="text/css" href="../static/css/main.css">
+    <meta charset="utf-8" />
+    {% block head %}
+    <title>Tic Tac Toe - {{id}}</title>
+    {% endblock %}
+
+</head>
+
+
+{% block body %}
+<body>
+    <div id='header'>
+        <div id='title'>
+            O's Turn
+        </div>
+    </div>
+    <div id='board'>
+        <div class='grid'>
+
+            <div class='button1'>&nbsp;</div>
+            <div class='button2'>&nbsp;</div>
+            <div class='button1'>&nbsp;</div>
+
+            <div class='button2'>&nbsp;</div>
+            <div class='button1'>&nbsp;</div>
+            <div class='button2'>&nbsp;</div>
+
+            <div class='button1'>&nbsp;</div>
+            <div class='button2'>&nbsp;</div>
+            <div class='button1'>&nbsp;</div>
+
+        </div>
+    </div>
+
+
+    <div id='caption'>
+        <div id='resetButton'>
+            Reset
+        </div>
+        <div id='menuButton'>
+            <a href='/' style="text-decoration:none;font-size:12px;color:black;
+            padding: 0.1em" class='text' target='_blank'>Menu</a>
+        </div>
+    </div>
+
+    <canvas id='ballpen'></canvas>
+    <script type='text/javascript' src="{{url_for('static', filename='scripts/main.js')}}"></script>
+</body>
+{% endblock %}
+</html>
+
+

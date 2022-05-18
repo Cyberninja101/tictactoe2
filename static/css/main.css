@@ -1,0 +1,116 @@
+* {
+    margin: 0;
+    padding: 0;
+    font-size: 14pt;
+    box-sizing: border-box;
+}
+
+div#header {
+    display: flex;
+    justify-content: center;    
+    align-items: center;
+    background-color: aqua;
+    min-width: 100vw;
+    min-height: 8vh;
+}
+
+div#header>div {
+    display: flex;
+    font-size: 3em;
+    
+    font-family: 'Alfa Slab One', cursive;
+}
+
+div#board {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    margin-top: 0.5em;
+    min-height: 60vh;
+}
+
+.grid {
+    display: grid;
+    background-color: black;
+    grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
+    grid-template-rows: 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
+    grid-gap: 0em;
+    min-height: 80vh;
+    min-width: 56vw;
+
+    padding: 1em;
+
+}
+
+
+.button1 {
+    font-family: 'Rubik Mono One', sans-serif;
+    background-color: lightblue;
+    padding: 0.1rem;
+    font-size: 2em;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.button2 {
+    font-family: 'Rubik Mono One', sans-serif;
+    background-color: black;
+    padding: 0.1rem;
+    font-size: 2em;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.button1:hover {
+    background-color: rgb(89, 149, 199);
+}
+
+div#caption {
+    display: flex;
+    justify-content: center;
+    flex-direction: row;
+}
+
+div#resetButton {
+    display: flex;
+    margin-top: 0.2em;
+    font-size: 2.5em;
+    background-color: pink;
+    padding: 0.3em;
+    border-radius: 0.8em;
+    margin-right: 2em;
+}
+
+div#resetButton:hover {
+    background-color: rgb(228, 171, 190);
+}
+
+div#menuButton {
+    display: flex;
+    text-decoration: none;
+    color: black;
+    margin-top: 0.3em;
+    margin-left: 2em;
+    font-size: 20pt;
+
+    background-color: pink;
+    padding: 0.4em;
+    border-radius: 1.5em;
+}
+
+div#menuButton:hover {
+    background-color: rgb(228, 171, 190);
+}
+
+canvas#ballpen {
+    display: block;
+    width: 100vw;
+    height: 50%;
+
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+}
