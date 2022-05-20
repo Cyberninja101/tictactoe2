@@ -5,6 +5,7 @@
 # Very useful: https://stackoverflow.com/questions/33678175/what-is-the-difference-between-session-and-db-session-in-sqlalchemy 
 # Join feature needs a lot of work, need to get rid of /join, and use html/js to call /<id> directly
 # HIII this is me testing if git works
+# This is testing if GIT changes stuff from macbook
 
 from flask import Flask, render_template, url_for, request, redirect, make_response
 from flask_sqlalchemy import SQLAlchemy
