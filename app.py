@@ -10,12 +10,20 @@
 
 from flask import Flask, render_template, url_for, request, redirect, make_response
 from flask_sqlalchemy import SQLAlchemy
+from flask_bootstrap import Bootstrap
+from flask_wtf import FlaskForm
+from wtforms import StringField, SubmitField
+from wtforms.validators import DataRequired
 from datetime import datetime 
 import json
 import webbrowser
+import sys
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///test.db'
+app.config['SECRET_KEY'] = "bd6fee817230f43dbbadce4f"
+
+Bootstrap(app)
 
 db = SQLAlchemy(app)
 # db.create_all()
@@ -25,24 +33,45 @@ print("hiboy", type(db.session))
 
 class Game(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    o = db.Column(db.Integer, default=0)
-    x = db.Column(db.Integer, default=40)
+    tile0 = db.Column(db.String, default="")
+    tile1 = db.Column(db.String, default="")
+    tile2 = db.Column(db.String, default="")
+    tile3 = db.Column(db.String, default="")
+    tile4 = db.Column(db.String, default="")
+    tile5 = db.Column(db.String, default="")
+    tile6 = db.Column(db.String, default="")
+    tile7 = db.Column(db.String, default="")
+    tile8 = db.Column(db.String, default="")
 
     def __repr__(self):
-        return '<Game %r, x= %s, o=%s>' % (self.id, self.x, self.o)
+        return '<Game %r' % (self.id)
 
-@app.route('/')
+class joinForm(FlaskForm):
+    join_id = StringField('Enter your game ID', validators=[DataRequired()])
+    submit = SubmitField('Submit')
+
+@app.route('/', methods=["Post", "Get"])
 def index():
-    return render_template('index.html') #make index.html
+    form = joinForm()
+    if form.validate_on_submit():
+        return redirect(url_for("game", id=form.join_id.data,side="o"))
 
-@app.route('/join')
-def join():
-    try:
-        game_id = request.form['game_id']
-        print(game_id)
-        return redirect(game_id) # Fix this
-    except:
-        return "There was an issue joining your game."
+    return render_template('index.html', form=form) #make index.html
+
+# @app.route('/join')
+# def join():
+#     return render_template("test.html")
+#     print("attempting to join")
+#     try:
+#         game_id = request.form['game_id']
+#         print(game_id)
+#         print(Game.query.all(),file=sys.stdout)
+#         # return redirect(url_for("game", id=1,side="0")) # Fix this
+#     except Exception as e:
+#         print(e)
+#         return "There was an issue joining your game."
+#         # add click here to try again
+    
 
 
 @app.route('/game/<int:id>/<side>') # 
@@ -63,7 +92,7 @@ def create_game():
         db.session.commit()
         print("hi")
         print(new_game.id)
-        return redirect(f"/game/{new_game.id}/x")
+        return redirect(url_for("game", id=new_game.id,side="x"))
     except Exception as e:
         print(e)
         return "There was an issue creating your game."
