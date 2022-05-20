@@ -10,6 +10,7 @@ from flask import Flask, render_template, url_for, request, redirect, make_respo
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime 
 import json
+import webbrowser
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///test.db'
@@ -37,16 +38,16 @@ def join():
     try:
         game_id = request.form['game_id']
         print(game_id)
-        return redirect(f"/game/{game_id}") # Fix this
+        return redirect(game_id) # Fix this
     except:
         return "There was an issue joining your game."
 
 
-@app.route('/game/<int:id>') # 
-def game(id): 
+@app.route('/game/<int:id>/<side>') # 
+def game(id, side): 
     # check if id in database, then do stuff
 
-    return render_template('game.html',id=id)
+    return render_template('game.html',id=id, side=side)
 
 
 
@@ -60,7 +61,7 @@ def create_game():
         db.session.commit()
         print("hi")
         print(new_game.id)
-        return redirect(f"/game/{new_game.id}")
+        return redirect(f"/game/{new_game.id}/x")
     except Exception as e:
         print(e)
         return "There was an issue creating your game."
