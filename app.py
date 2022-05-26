@@ -10,7 +10,7 @@
 
 from flask import Flask, render_template, url_for, request, redirect, make_response
 from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy import Column, ForeignKey, Integer, Table
+from sqlalchemy import Column, ForeignKey, Integer, Table, create_engine
 from sqlalchemy.orm import declarative_base, relationship
 from flask_bootstrap import Bootstrap
 from flask_wtf import FlaskForm
@@ -19,25 +19,35 @@ from wtforms.validators import DataRequired
 from datetime import datetime 
 import json
 import webbrowser
-import sys
+import sys, os
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///test.db'
 app.config['SECRET_KEY'] = "bd6fee817230f43dbbadce4f"
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False #to supress warning
 
 Bootstrap(app)
 
+engine = create_engine("mysql://user:pw@host/db", pool_pre_ping=True)
+
 db = SQLAlchemy(app)
 # db.create_all()
-print("hiboy", type(db.session)) 
+# print("hiboy", type(db.session)) 
 # Just testing
+
+if os.path.exists('test.db'):
+  os.remove('test.db')
+  
+db.create_all()
+
+
 
 
 class Game(db.Model):
     # __tablename__ = "game"
     id = db.Column(db.Integer, primary_key=True)
-    tile1 = db.Column(db.String, unique=False, nullable=True)
     tile0 = db.Column(db.String, unique=False, nullable=True)
+    tile1 = db.Column(db.String, unique=False, nullable=True)
     tile2 = db.Column(db.String, unique=False, nullable=True)
     tile3 = db.Column(db.String, unique=False, nullable=True)
     tile4 = db.Column(db.String, unique=False, nullable=True)
@@ -105,24 +115,23 @@ def game(id, side):
 
     return render_template('game.html',id=id, side=side)
 
-
-
 @app.route('/create')
 def create_game():
-    new_game = Game()
+    # db.create_all()
+    # db.session.commit()
+    howdy = Game(tile0="", tile1="", tile2="", tile3="", tile4="", tile5="", tile6="", tile7="", tile8="")
+    db.session.add(howdy)
     try:
-        db.create_all() # This fixed it
-        db.session.add(new_game)
-        db.session.commit()
+        db.session.commit() # This line has issues, says column doesn't exist
         print("hi")
-        print(new_game.id)
-        return redirect(url_for("game", id=new_game.id,side="x"))
+        print(howdy.id)
+        return redirect(url_for("game", id=howdy.id,side="x"))
     except Exception as e:
         print(e)
         db.session.rollback()
         return "There was an issue creating your game."
         # add click here to try again
-    
+
 
 #join by either typing in url, or text form, and redirect using js
 
