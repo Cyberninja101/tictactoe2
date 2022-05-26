@@ -10,6 +10,8 @@
 
 from flask import Flask, render_template, url_for, request, redirect, make_response
 from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy import Column, ForeignKey, Integer, Table
+from sqlalchemy.orm import declarative_base, relationship
 from flask_bootstrap import Bootstrap
 from flask_wtf import FlaskForm
 from wtforms import StringField, SubmitField
@@ -32,19 +34,42 @@ print("hiboy", type(db.session))
 
 
 class Game(db.Model):
+    # __tablename__ = "game"
     id = db.Column(db.Integer, primary_key=True)
-    tile0 = db.Column(db.String, default="")
-    tile1 = db.Column(db.String, default="")
-    tile2 = db.Column(db.String, default="")
-    tile3 = db.Column(db.String, default="")
-    tile4 = db.Column(db.String, default="")
-    tile5 = db.Column(db.String, default="")
-    tile6 = db.Column(db.String, default="")
-    tile7 = db.Column(db.String, default="")
-    tile8 = db.Column(db.String, default="")
+    tile1 = db.Column(db.String, unique=False, nullable=True)
+    tile0 = db.Column(db.String, unique=False, nullable=True)
+    tile2 = db.Column(db.String, unique=False, nullable=True)
+    tile3 = db.Column(db.String, unique=False, nullable=True)
+    tile4 = db.Column(db.String, unique=False, nullable=True)
+    tile5 = db.Column(db.String, unique=False, nullable=True)
+    tile6 = db.Column(db.String, unique=False, nullable=True)
+    tile7 = db.Column(db.String, unique=False, nullable=True)
+    tile8 = db.Column(db.String, unique=False, nullable=True)
+
+    move = relationship("Move", backref="game", lazy='dynamic')
 
     def __repr__(self):
         return '<Game %r' % (self.id)
+
+class Player(db.Model):
+    # __tablename__ = "player"
+    id = db.Column(db.Integer, primary_key=True)
+    side = db.Column(db.String, unique=True, nullable=False) #Unique might be false
+    # game_id = db.Column(db.Integer, ForeignKey("game.id"))
+    
+    move = relationship("Move", backref="player", lazy='dynamic')
+
+    def __repr__(self):
+        return '<Player %r, side %r' % (self.id, self.side)
+
+class Move(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    player_id = db.Column(db.Integer, db.ForeignKey("player.id"))
+    game_id = db.Column(db.Integer, db.ForeignKey("game.id"))
+    tile = db.Column(db.Integer, index=True, nullable=False)
+
+    def __repr__(self):
+        return 'id: %r' % (self.id)
 
 class joinForm(FlaskForm):
     join_id = StringField('Enter your game ID', validators=[DataRequired()])
@@ -84,7 +109,6 @@ def game(id, side):
 
 @app.route('/create')
 def create_game():
-    # create database row, init game, generate id, get id, 
     new_game = Game()
     try:
         db.create_all() # This fixed it
@@ -95,6 +119,7 @@ def create_game():
         return redirect(url_for("game", id=new_game.id,side="x"))
     except Exception as e:
         print(e)
+        db.session.rollback()
         return "There was an issue creating your game."
         # add click here to try again
     
