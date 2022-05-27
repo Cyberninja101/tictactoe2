@@ -69,11 +69,11 @@ function handleClick(event) {
     let target = event.target;
     let x_or_o = "";
     if (board[target.id] == 0) {
-        for (let i = 0; i < board.length; i++) {
-            if (board[i] == turn) {
-                board[i] = 0;
-            }
-        }
+        // for (let i = 0; i < board.length; i++) {
+        //     if (board[i] == turn) {
+        //         board[i] = 0;
+        //     }
+        // }
 
         if (turn == 1) {
             if (checkValidPos(player1, target.id)) {

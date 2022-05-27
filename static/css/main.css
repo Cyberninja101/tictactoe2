@@ -44,33 +44,36 @@ div#board {
 }
 
 
-.button1 {
+.button {
     font-family: 'Rubik Mono One', sans-serif;
-    background-color: lightblue;
+    background-color: #add8e6;
+    border-style: solid;
+    border-width: medium;
+    border-color: black;
     padding: 0.1rem;
-    font-size: 2em;
+    font-size: 4em;
     display: flex;
     justify-content: center;
     align-items: center;
 }
 
-.button2 {
+/* .button2 {
     font-family: 'Rubik Mono One', sans-serif;
-    background-color: black;
+    background-color: #ade6bb;
     padding: 0.1rem;
     font-size: 2em;
     display: flex;
     justify-content: center;
     align-items: center;
-}
+} */
 
-.button1:hover {
+.button:hover {
     background-color: rgb(89, 149, 199);
 }
 
-.button2:hover {
-    background-color: rgb(66, 66, 66);
-}
+/* .button2:hover {
+    background-color: #d2f0d9;
+} */
 
 div#caption {
     display: flex;
