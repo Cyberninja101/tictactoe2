@@ -6,7 +6,7 @@
 <link href="../../static/css/main.css" rel="stylesheet" type="text/css">
 <!--Fix this css link when deploying site, this is only temporary in development-->
 <link href="https://fonts.googleapis.com/css?family=Alfa+Slab+One|Butcherman&display=swap" rel="stylesheet">
-
+<link rel="shortcut icon" href="#">
 
 <meta charset="utf-8" />
 
@@ -25,17 +25,17 @@
 <div id='board'>
     <div class='grid'>
 
-        <div class='button1'>&nbsp;</div>
-        <div class='button2'>&nbsp;</div>
-        <div class='button1'>&nbsp;</div>
+        <div class='button1 button'>&nbsp;</div>
+        <div class='button2 button'>&nbsp;</div>
+        <div class='button1 button'>&nbsp;</div>
 
-        <div class='button2'>&nbsp;</div>
-        <div class='button1'>&nbsp;</div>
-        <div class='button2'>&nbsp;</div>
+        <div class='button2 button'>&nbsp;</div>
+        <div class='button1 button'>&nbsp;</div>
+        <div class='button2 button'>&nbsp;</div>
 
-        <div class='button1'>&nbsp;</div>
-        <div class='button2'>&nbsp;</div>
-        <div class='button1'>&nbsp;</div>
+        <div class='button1 button'>&nbsp;</div>
+        <div class='button2 button'>&nbsp;</div>
+        <div class='button1 button'>&nbsp;</div>
 
     </div>
 </div>
@@ -52,7 +52,7 @@
 </div>
 
 <canvas id='ballpen'></canvas>
-<script type='text/javascript' src="{{url_for('static', filename='scripts/main.js')}}"></script>
+<script type='text/javascript' src="{{url_for('static', filename='scripts/tictactoe.js')}}"></script>
 
 {% endblock %}
 </html>

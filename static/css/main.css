@@ -68,6 +68,10 @@ div#board {
     background-color: rgb(89, 149, 199);
 }
 
+.button2:hover {
+    background-color: rgb(66, 66, 66);
+}
+
 div#caption {
     display: flex;
     justify-content: center;

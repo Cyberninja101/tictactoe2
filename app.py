@@ -142,8 +142,6 @@ def receive_cord():
     content = request.json
     print("hello")
     print(content)
-    o = content["o"]
-    x = content["x"]
     print(o, x)
     # Update Database here:
     return json.dumps({'success':True}), 200, {'ContentType':'application/json'} 
