@@ -28,7 +28,7 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False #to supress warning
 
 Bootstrap(app)
 
-engine = create_engine("mysql://user:pw@host/db", pool_pre_ping=True)
+# engine = create_engine("mysql://user:pw@host/db", pool_pre_ping=True)
 
 db = SQLAlchemy(app)
 # db.create_all()
@@ -38,12 +38,11 @@ db = SQLAlchemy(app)
 if os.path.exists('test.db'):
   os.remove('test.db')
   
-db.create_all()
 
 
 
 
-class Game(db.Model):
+class Board(db.Model):
     # __tablename__ = "game"
     id = db.Column(db.Integer, primary_key=True)
     tile0 = db.Column(db.String, unique=False, nullable=True)
@@ -56,10 +55,10 @@ class Game(db.Model):
     tile7 = db.Column(db.String, unique=False, nullable=True)
     tile8 = db.Column(db.String, unique=False, nullable=True)
 
-    move = relationship("Move", backref="game", lazy='dynamic')
+    move = relationship("Move", backref="boards", lazy='dynamic')
 
     def __repr__(self):
-        return '<Game %r' % (self.id)
+        return '<Board %r' % (self.id)
 
 class Player(db.Model):
     # __tablename__ = "player"
@@ -67,7 +66,7 @@ class Player(db.Model):
     side = db.Column(db.String, unique=True, nullable=False) #Unique might be false
     # game_id = db.Column(db.Integer, ForeignKey("game.id"))
     
-    move = relationship("Move", backref="player", lazy='dynamic')
+    move = relationship("Move", backref="players", lazy='dynamic')
 
     def __repr__(self):
         return '<Player %r, side %r' % (self.id, self.side)
@@ -75,11 +74,14 @@ class Player(db.Model):
 class Move(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     player_id = db.Column(db.Integer, db.ForeignKey("player.id"))
-    game_id = db.Column(db.Integer, db.ForeignKey("game.id"))
+    board_id = db.Column(db.Integer, db.ForeignKey("board.id"))
     tile = db.Column(db.Integer, index=True, nullable=False)
 
     def __repr__(self):
         return 'id: %r' % (self.id)
+
+db.create_all()
+
 
 class joinForm(FlaskForm):
     join_id = StringField('Enter your game ID', validators=[DataRequired()])
@@ -119,7 +121,7 @@ def game(id, side):
 def create_game():
     # db.create_all()
     # db.session.commit()
-    howdy = Game(tile0="", tile1="", tile2="", tile3="", tile4="", tile5="", tile6="", tile7="", tile8="")
+    howdy = Board(tile0="", tile1="", tile2="", tile3="", tile4="", tile5="", tile6="", tile7="", tile8="")
     db.session.add(howdy)
     try:
         db.session.commit() # This line has issues, says column doesn't exist
