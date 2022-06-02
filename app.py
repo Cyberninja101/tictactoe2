@@ -16,13 +16,18 @@ from flask_bootstrap import Bootstrap
 from flask_wtf import FlaskForm
 from wtforms import StringField, SubmitField
 from wtforms.validators import DataRequired
+import sqlite3
+from sqlite3 import Error
 from datetime import datetime 
 import json
 import webbrowser
 import sys, os
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///test.db'
+
+db_name = "boards.db"
+
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + db_name
 app.config['SECRET_KEY'] = "bd6fee817230f43dbbadce4f"
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False #to supress warning
 
@@ -38,12 +43,39 @@ db = SQLAlchemy(app)
 if os.path.exists('test.db'):
   os.remove('test.db')
   
+# def create_connection(db_file):
+#     """ create a database connection to the SQLite database
+#         specified by the db_file
+#     :param db_file: database file
+#     :return: Connection object or None
+#     """
+#     conn = None
+#     try:
+#         conn = sqlite3.connect(db_file)
+#     except Error as e:
+#         print(e)
 
+#     return conn
+
+
+# def update_board(conn, tile, task):
+#     """
+#     update priority, begin_date, and end date of a task
+#     :param conn:
+#     :param task:
+#     :return: project id
+#     """
+#     sql = f''' UPDATE boards
+#               SET tile{tile} = ?
+#               WHERE id = ?'''
+#     cur = conn.cursor()
+#     cur.execute(sql, task)
+#     conn.commit()
 
 
 
 class Board(db.Model):
-    # __tablename__ = "game"
+    __tablename__ = "game"
     id = db.Column(db.Integer, primary_key=True)
     tile0 = db.Column(db.String, unique=False, nullable=True)
     tile1 = db.Column(db.String, unique=False, nullable=True)
@@ -55,16 +87,16 @@ class Board(db.Model):
     tile7 = db.Column(db.String, unique=False, nullable=True)
     tile8 = db.Column(db.String, unique=False, nullable=True)
 
-    move = relationship("Move", backref="boards", lazy='dynamic')
-
+    # move = relationship("Move", backref="boards", lazy='dynamic')
+    player = relationship("Player", backref="players", lazy='dynamic')
     def __repr__(self):
         return '<Board %r' % (self.id)
 
 class Player(db.Model):
-    # __tablename__ = "player"
+    __tablename__ = "player"
     id = db.Column(db.Integer, primary_key=True)
     side = db.Column(db.String, unique=True, nullable=False) #Unique might be false
-    # game_id = db.Column(db.Integer, ForeignKey("game.id"))
+    game_id = db.Column(db.Integer, ForeignKey("game.id"))
     
     move = relationship("Move", backref="players", lazy='dynamic')
 
@@ -72,9 +104,10 @@ class Player(db.Model):
         return '<Player %r, side %r' % (self.id, self.side)
 
 class Move(db.Model):
+    __tablename = "move"
     id = db.Column(db.Integer, primary_key=True)
     player_id = db.Column(db.Integer, db.ForeignKey("player.id"))
-    board_id = db.Column(db.Integer, db.ForeignKey("board.id"))
+    # board_id = db.Column(db.Integer, db.ForeignKey("board.id"))
     tile = db.Column(db.Integer, index=True, nullable=False)
 
     def __repr__(self):
@@ -122,12 +155,14 @@ def create_game():
     # db.create_all()
     # db.session.commit()
     howdy = Board(tile0="", tile1="", tile2="", tile3="", tile4="", tile5="", tile6="", tile7="", tile8="")
+    player1 = Player(side="o")
     db.session.add(howdy)
+    db.session.add(player1)
     try:
         db.session.commit() # This line has issues, says column doesn't exist
         print("hi")
         print(howdy.id)
-        return redirect(url_for("game", id=howdy.id,side="x"))
+        return redirect(url_for("game", id=howdy.id,side=player1.side))
     except Exception as e:
         print(e)
         db.session.rollback()
@@ -142,8 +177,8 @@ def receive_cord():
     content = request.json
     print("hello")
     print(content)
-    print(o, x)
     # Update Database here:
+    game = Board.query.get(content["id"])
     return json.dumps({'success':True}), 200, {'ContentType':'application/json'} 
 
 

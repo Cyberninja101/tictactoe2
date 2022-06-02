@@ -19,9 +19,14 @@ let buttons = document.getElementsByClassName('button');
 let resetButton = document.getElementById('resetButton')
 let title = document.getElementById("title")
 
+let id = String(window.location.href).substring(27)
+id = parseInt(id.substring(0, (id.length - 2)))
 
 function init() {
     console.log("init")
+    // getting id of current game
+    
+    console.log(id)
     canvas = document.getElementById('ballpen')
     canvas.width = canvas.clientWidth;
     canvas.height = canvas.clientHeight;
@@ -95,8 +100,8 @@ function handleClick(event) {
                 updateBoard()
             }
         }
-        console.log("hello",target.id, x_or_o)
-        post_cord(target.id, x_or_o)
+        console.log("hello",id, target.id, x_or_o)
+        post_cord([id, target.id, x_or_o])
     
     
     }
@@ -149,8 +154,8 @@ function post_cord(cord) {
             console.log("Got it.");
         }
     };
-    // var data = JSON.stringify({"o": cord[0], "x": cord[1]});
-    var data = cord
+    var data = JSON.stringify({"id": cord[0], "pos":cord[1], "player":cord[2]});
+    // var data = cord
     xhr.send(data);
     console.log(data)
 }
