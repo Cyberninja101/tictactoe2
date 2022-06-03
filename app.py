@@ -25,7 +25,7 @@ import sys, os
 
 app = Flask(__name__)
 
-db_name = "boards.db"
+db_name = "board.db"
 
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + db_name
 app.config['SECRET_KEY'] = "bd6fee817230f43dbbadce4f"
@@ -40,8 +40,8 @@ db = SQLAlchemy(app)
 # print("hiboy", type(db.session)) 
 # Just testing
 
-if os.path.exists('test.db'):
-  os.remove('test.db')
+if os.path.exists('board.db'):
+  os.remove('board.db')
   
 # def create_connection(db_file):
 #     """ create a database connection to the SQLite database
@@ -75,7 +75,7 @@ if os.path.exists('test.db'):
 
 
 class Board(db.Model):
-    __tablename__ = "game"
+    __tablename__ = "board"
     id = db.Column(db.Integer, primary_key=True)
     tile0 = db.Column(db.String, unique=False, nullable=True)
     tile1 = db.Column(db.String, unique=False, nullable=True)
@@ -95,23 +95,23 @@ class Board(db.Model):
 class Player(db.Model):
     __tablename__ = "player"
     id = db.Column(db.Integer, primary_key=True)
-    side = db.Column(db.String, unique=True, nullable=False) #Unique might be false
-    game_id = db.Column(db.Integer, ForeignKey("game.id"))
+    side = db.Column(db.String, unique=False, nullable=False) #Unique might be false
+    board_id = db.Column(db.Integer, ForeignKey("board.id"))
     
-    move = relationship("Move", backref="players", lazy='dynamic')
+    # move = relationship("Move", backref="players", lazy='dynamic')
 
     def __repr__(self):
         return '<Player %r, side %r' % (self.id, self.side)
 
-class Move(db.Model):
-    __tablename = "move"
-    id = db.Column(db.Integer, primary_key=True)
-    player_id = db.Column(db.Integer, db.ForeignKey("player.id"))
-    # board_id = db.Column(db.Integer, db.ForeignKey("board.id"))
-    tile = db.Column(db.Integer, index=True, nullable=False)
+# class Move(db.Model):
+#     __tablename = "move"
+#     id = db.Column(db.Integer, primary_key=True)
+#     player_id = db.Column(db.Integer, db.ForeignKey("player.id"))
+#     # board_id = db.Column(db.Integer, db.ForeignKey("board.id"))
+#     tile = db.Column(db.Integer, index=True, nullable=False)
 
-    def __repr__(self):
-        return 'id: %r' % (self.id)
+#     def __repr__(self):
+#         return 'id: %r' % (self.id)
 
 db.create_all()
 
@@ -152,17 +152,20 @@ def game(id, side):
 
 @app.route('/create')
 def create_game():
-    # db.create_all()
+    db.create_all()
     # db.session.commit()
-    howdy = Board(tile0="", tile1="", tile2="", tile3="", tile4="", tile5="", tile6="", tile7="", tile8="")
-    player1 = Player(side="o")
-    db.session.add(howdy)
+    board = Board(tile0="", tile1="", tile2="", tile3="", tile4="", tile5="", tile6="", tile7="", tile8="")
+    db.session.add(board)
+    
+    db.session.commit()
+    
+    player1 = Player(side="o", board_id=board.id)
     db.session.add(player1)
     try:
         db.session.commit() # This line has issues, says column doesn't exist
         print("hi")
-        print(howdy.id)
-        return redirect(url_for("game", id=howdy.id,side=player1.side))
+        print(board.id)
+        return redirect(url_for("game", id=board.id,side=player1.side))
     except Exception as e:
         print(e)
         db.session.rollback()
@@ -178,7 +181,11 @@ def receive_cord():
     print("hello")
     print(content)
     # Update Database here:
-    game = Board.query.get(content["id"])
+
+    board = Board.query.get(content["id"])
+    exec(f"board.tile{content['pos']} = content['player']")
+    db.session.commit()
+
     return json.dumps({'success':True}), 200, {'ContentType':'application/json'} 
 
 
