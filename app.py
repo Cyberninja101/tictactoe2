@@ -7,8 +7,9 @@
 # HIII this is me testing if git works
 # This is testing if GIT changes stuff from macbook
 # Testing push from pc
+# https://healeycodes.com/talking-between-languages - really good article for talking between flask python and js
 
-from flask import Flask, render_template, url_for, request, redirect, make_response
+from flask import Flask, render_template, url_for, request, redirect, make_response, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import Column, ForeignKey, Integer, Table, create_engine
 from sqlalchemy.orm import declarative_base, relationship
@@ -124,7 +125,15 @@ class joinForm(FlaskForm):
 def index():
     form = joinForm()
     if form.validate_on_submit():
-        return redirect(url_for("game", id=form.join_id.data,side="o"))
+        db.create_all()
+        player2 = Player(side="x", board_id=form.join_id.data) 
+        db.session.add(player2)
+        try:
+            db.session.commit()
+        except:
+            db.session.rollback()
+
+        return redirect(url_for("game", id=form.join_id.data,side=player2.side))
 
     return render_template('index.html', form=form) #make index.html
 
@@ -159,7 +168,7 @@ def create_game():
     
     db.session.commit()
     
-    player1 = Player(side="o", board_id=board.id)
+    player1 = Player(side="o", board_id=board.id) 
     db.session.add(player1)
     try:
         db.session.commit() # This line has issues, says column doesn't exist
@@ -175,7 +184,7 @@ def create_game():
 
 #join by either typing in url, or text form, and redirect using js
 
-@app.route('/receive_cord', methods = ["POST"])
+@app.route('/receive_cord', methods = ["POST", "Get"])
 def receive_cord():
     content = request.json
     print("hello")
@@ -184,9 +193,13 @@ def receive_cord():
 
     board = Board.query.get(content["id"])
     exec(f"board.tile{content['pos']} = content['player']")
-    db.session.commit()
 
-    return json.dumps({'success':True}), 200, {'ContentType':'application/json'} 
+    # return json.dumps({'success':True}), 200, {'ContentType':'application/json'} 
+    tiles = []
+    for i in range(9):
+        exec(f"tiles.append(board.tile{i})")
+    print(tiles)
+    return jsonify(tiles)
 
 
 

@@ -141,6 +141,10 @@ function updateBoard() {
     }
 }
 
+function renewBoard() {
+    
+}
+
 function post_cord(cord) {
     // Sending and receiving data in JSON format using POST method
     //
