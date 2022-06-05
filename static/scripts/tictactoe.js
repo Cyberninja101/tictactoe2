@@ -67,7 +67,7 @@ function reset() {
     updateBoard()
 
     console.log( "RESET:", canvas.style.display)
-}
+} 
 
 function handleClick(event) {
     
