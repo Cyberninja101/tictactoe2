@@ -8,6 +8,7 @@
 # This is testing if GIT changes stuff from macbook
 # Testing push from pc
 # https://healeycodes.com/talking-between-languages - really good article for talking between flask python and js
+# Testing new pull request from pc
 
 from flask import Flask, render_template, url_for, request, redirect, make_response, jsonify
 from flask_sqlalchemy import SQLAlchemy
